@@ -1,4 +1,4 @@
-setwd("DATOS")
+setwd("S:/DATOS")
 
 # Importar datos ----------------------------------------------------------
 
@@ -346,56 +346,6 @@ t.capital <- data.frame(select(o0.vrCupo, CEDULA),
 f.totales <- full_join(f.totales, t.capital, by = "CEDULA")
 
 
-# PRUEBA RFORCECOM --------------------------------------------------------
-
-# Salesforce login
-library(RForcecom)
-username <- "admin@andes.org"
-password <- "admgf2017*XQWRiDpPU6NzJC9Cmm185FF2"
-instanceURL <- "https://taroworks-8629.cloudforce.com/"
-apiVersion <- "36.0"
-session <- rforcecom.login(username, password, instanceURL, apiVersion) 
-
-# Crear datos
-ABC__c <- rep(c("a", "b", "c"), 100)
-Numero__c <- round(rnorm(300, mean = 10, sd = 2), digits = 0)
-Name <- c()
-for(i in 1:300) {
-     Name <- c(Name, paste("name", i))
-}
-
-data <- data.frame(Name, Numero__c, ABC__c)
-
-# Cargar datos
-
-## run an insert job into the Account object
-job_info <- rforcecom.createBulkJob(session, 
-                                    operation='insert', 
-                                    object='RForcecom__c')
-
-## split into batch sizes of 200
-batches_info <- rforcecom.createBulkBatch(session, 
-                                          jobId=job_info$id, 
-                                          data, 
-                                          multiBatch = TRUE, 
-                                          batchSize=200)
-
-## check on status of each batch
-batches_status <- lapply(batches_info, 
-                         FUN=function(x){
-                              rforcecom.checkBatchStatus(session, 
-                                                         jobId=x$jobId, 
-                                                         batchId=x$id)
-                         })
-## get details on each batch
-batches_detail <- lapply(batches_info, 
-                         FUN=function(x){
-                              rforcecom.getBatchDetails(session, 
-                                                        jobId=x$jobId, 
-                                                        batchId=x$id)
-                         })
-## close the job
-close_job_info <- rforcecom.closeBulkJob(session, jobId=job_info$id)
 
 
 # Subir datos a Salesforce ------------------------------------------------
@@ -465,71 +415,71 @@ close_job_info <- rforcecom.closeBulkJob(session, jobId=job_info$id)
 
 ## Agregar ID de 'Crédito total' a los objetos restantes
 
-### Agregar ID de Salesforce (CORREGIR ESTO, EL ID ES DE 'CRÉDITO TOTAL'!!!!)
-
-f.almacCafe$CEDULA <- as.factor(f.almacCafe$CEDULA)
-f.movCapital$CEDULA <- as.factor(f.movCapital$CEDULA)
-f.observaciones$CEDULA <- as.factor(f.observaciones$CEDULA)
-f.RelCartAsoc$CEDULA <- as.factor(f.RelCartAsoc$CEDULA)
-names(productores.sf)[2] <- "CEDULA"
-
-f.almacCafe <- left_join(f.almacCafe, productores.sf, 
-                         by = "CEDULA")
-f.movCapital <- left_join(f.movCapital, productores.sf, 
-                          by = "CEDULA")
-f.observaciones <- left_join(f.observaciones, productores.sf, 
-                             by = "CEDULA")
-f.RelCartAsoc <- left_join(f.RelCartAsoc, productores.sf, 
-                           by = "CEDULA")
-
-### Renombrar variables
-names(f.almacCafe) <- c("CEDULA", "ALMACEN", "REFERENCIA", "FECHA", "FECVEN",
-                        "VALOR", "estado.almacCafe", "Id"  )
-
-### Cargar datos
-
-job_info <- rforcecom.createBulkJob(session,
-                                    operation='insert',
-                                    object='RForcecom__c')
-#### almacCafe
-batches_f.almacCafe <- rforcecom.createBulkBatch(session,
-                                          jobId=job_info$id,
-                                          f.almacCafe,
-                                          multiBatch = TRUE,
-                                          batchSize=200)
-#### movCapital
-batches_f.movCapital <- rforcecom.createBulkBatch(session,
-                                          jobId=job_info$id,
-                                          f.movCapital,
-                                          multiBatch = TRUE,
-                                          batchSize=200)
-#### observaciones
-batches_f.observaciones <- rforcecom.createBulkBatch(session,
-                                          jobId=job_info$id,
-                                          f.observaciones,
-                                          multiBatch = TRUE,
-                                          batchSize=200)
-#### RelCartAsoc
-batches_f.RelCartAsoc <- rforcecom.createBulkBatch(session,
-                                          jobId=job_info$id,
-                                          f.RelCartAsoc,
-                                          multiBatch = TRUE,
-                                          batchSize=200)
-batches_status <- lapply(batches_f.almacCafe,
-                         FUN=function(x){
-                               rforcecom.checkBatchStatus(session,
-                                                          jobId=x$jobId,
-                                                          batchId=x$id)
-                         })
-
-batches_detail <- lapply(batches_f.almacCafe,
-                         FUN=function(x){
-                               rforcecom.getBatchDetails(session,
-                                                         jobId=x$jobId,
-                                                         batchId=x$id)
-                         })
-
-close_job_info <- rforcecom.closeBulkJob(session, jobId=job_info$id)
+# ### Agregar ID de Salesforce (CORREGIR ESTO, EL ID ES DE 'CRÉDITO TOTAL'!!!!)
+# 
+# f.almacCafe$CEDULA <- as.factor(f.almacCafe$CEDULA)
+# f.movCapital$CEDULA <- as.factor(f.movCapital$CEDULA)
+# f.observaciones$CEDULA <- as.factor(f.observaciones$CEDULA)
+# f.RelCartAsoc$CEDULA <- as.factor(f.RelCartAsoc$CEDULA)
+# names(productores.sf)[2] <- "CEDULA"
+# 
+# f.almacCafe <- left_join(f.almacCafe, productores.sf, 
+#                          by = "CEDULA")
+# f.movCapital <- left_join(f.movCapital, productores.sf, 
+#                           by = "CEDULA")
+# f.observaciones <- left_join(f.observaciones, productores.sf, 
+#                              by = "CEDULA")
+# f.RelCartAsoc <- left_join(f.RelCartAsoc, productores.sf, 
+#                            by = "CEDULA")
+# 
+# ### Renombrar variables
+# names(f.almacCafe) <- c("CEDULA", "ALMACEN", "REFERENCIA", "FECHA", "FECVEN",
+#                         "VALOR", "estado.almacCafe", "Id"  )
+# 
+# ### Cargar datos
+# 
+# job_info <- rforcecom.createBulkJob(session,
+#                                     operation='insert',
+#                                     object='RForcecom__c')
+# #### almacCafe
+# batches_f.almacCafe <- rforcecom.createBulkBatch(session,
+#                                           jobId=job_info$id,
+#                                           f.almacCafe,
+#                                           multiBatch = TRUE,
+#                                           batchSize=200)
+# #### movCapital
+# batches_f.movCapital <- rforcecom.createBulkBatch(session,
+#                                           jobId=job_info$id,
+#                                           f.movCapital,
+#                                           multiBatch = TRUE,
+#                                           batchSize=200)
+# #### observaciones
+# batches_f.observaciones <- rforcecom.createBulkBatch(session,
+#                                           jobId=job_info$id,
+#                                           f.observaciones,
+#                                           multiBatch = TRUE,
+#                                           batchSize=200)
+# #### RelCartAsoc
+# batches_f.RelCartAsoc <- rforcecom.createBulkBatch(session,
+#                                           jobId=job_info$id,
+#                                           f.RelCartAsoc,
+#                                           multiBatch = TRUE,
+#                                           batchSize=200)
+# batches_status <- lapply(batches_f.almacCafe,
+#                          FUN=function(x){
+#                                rforcecom.checkBatchStatus(session,
+#                                                           jobId=x$jobId,
+#                                                           batchId=x$id)
+#                          })
+# 
+# batches_detail <- lapply(batches_f.almacCafe,
+#                          FUN=function(x){
+#                                rforcecom.getBatchDetails(session,
+#                                                          jobId=x$jobId,
+#                                                          batchId=x$id)
+#                          })
+# 
+# close_job_info <- rforcecom.closeBulkJob(session, jobId=job_info$id)
 
 
 
