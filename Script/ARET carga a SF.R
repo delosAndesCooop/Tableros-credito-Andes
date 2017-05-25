@@ -1,7 +1,13 @@
-setwd("Datos")
+setwd("DATOS")
 
 # Importar datos ----------------------------------------------------------
-archivos.dbf <- list.files(pattern = "*.DBF|*.dbf")
+
+archivos.dbf <- c("aso_mfincas.DBF", "car_castigada.DBF", "car_cosj.DBF", 
+                  "car_cosj_castigada.DBF", "car_mcre.DBF", "car_pagos.DBF", 
+                  "car_pendien.DBF", "car_pendien_castigada.DBF",
+                  "car_vigente.DBF", "daportes.DBF", "factalma.DBF", 
+                  "malmacen.DBF", "masociado.DBF", "mcuoingr.dbf", 
+                  "mmunicipio.dbf" )
 
 library(foreign)
 library(dplyr)
